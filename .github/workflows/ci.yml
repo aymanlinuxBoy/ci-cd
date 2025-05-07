@@ -28,7 +28,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-    - name: Debug: list build/libs
+    - name: Debug:list-build-libs
       run: ls -l build/libs
 
   #  - name: Build and Push Docker Image
