@@ -28,22 +28,22 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-   # - name: Build and Push Docker Image
-    #  uses: mr-smithers-excellent/docker-build-push@v4
-     # with:
-      #  image: nanajanashia/demo-app
-       # registry: docker.io
-       # username: ${{ secrets.DOCKER_USERNAME }}
-        #password: ${{ secrets.DOCKER_PASSWORD }}
-
-
     - name: Build and Push Docker Image
       uses: mr-smithers-excellent/docker-build-push@v4
       with:
-        image: devops/gradle
-        registry: 863518431381.dkr.ecr.us-east-1.amazonaws.com
-      env:
-        AWS_ACCESS_KEY_ID: AKIAZFRF4HGTIQVI4XQJ
-        AWS_SECRET_ACCESS_KEY: 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
+        image: aimocont2020/devops
+        registry: docker.io
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+
+    #- name: Build and Push Docker Image
+     # uses: mr-smithers-excellent/docker-build-push@v4
+      #with:
+       # image: devops/gradle
+        #registry: 863518431381.dkr.ecr.us-east-1.amazonaws.com
+      #env:
+       # AWS_ACCESS_KEY_ID: AKIAZFRF4HGTIQVI4XQJ
+        #AWS_SECRET_ACCESS_KEY: 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
        # username: ${{ secrets.DOCKER_USERNAME }}
         #password: ${{ secrets.DOCKER_PASSWORD }}
