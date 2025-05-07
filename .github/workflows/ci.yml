@@ -46,7 +46,7 @@ jobs:
         image: devops/gradle
         registry: 863518431381.dkr.ecr.us-east-1.amazonaws.com
       env:
-        AWS_ACCESS_KEY_ID: AKIAZFRF4HGTIQVI4XQJ
-        AWS_SECRET_ACCESS_KEY: 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
+        AWS_ACCESS_KEY_ID: AKIA4SDNVTCKW6AY4OM6
+        AWS_SECRET_ACCESS_KEY: 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
        # username: ${{ secrets.DOCKER_USERNAME }}
         #password: ${{ secrets.DOCKER_PASSWORD }}
