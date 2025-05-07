@@ -31,13 +31,13 @@ jobs:
     - name: Debug:list-build-libs
       run: ls -l build/libs
 
-  #  - name: Build and Push Docker Image
-   #   uses: mr-smithers-excellent/docker-build-push@v6
-    #  with:
-     #   image: aimocont2020/devops
-      #  registry: docker.io
-       # username: aimocont2020
-        #password: MananlLove283
+    - name: Build and Push Docker Image
+      uses: mr-smithers-excellent/docker-build-push@v6
+      with:
+        image: aimocont2020/devops
+        registry: docker.io
+        username: aimocont2020
+        password: MananlLove283
 
 
     #- name: Build and Push Docker Image
