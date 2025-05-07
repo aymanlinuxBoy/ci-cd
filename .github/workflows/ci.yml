@@ -41,7 +41,7 @@ jobs:
 
 
     - name: Build and Push Docker Image
-      uses: mr-smithers-excellent/docker-build-push@v4
+      uses: mr-smithers-excellent/docker-build-push@v6
       with:
         image: devops/gradle
         registry: 863518431381.dkr.ecr.us-east-1.amazonaws.com
