@@ -41,6 +41,9 @@ jobs:
         run: |
            ./gradlew clean build -x test
             ls -lat
+            
+      - name: List local Docker images
+        run: docker images
 
 
       - name: Tag Docker image
