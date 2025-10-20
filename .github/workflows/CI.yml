@@ -3,7 +3,7 @@ name: Build and Push to ECR
 on:
   push:
     branches:
-      - '**'  # or any branch you prefer
+      - master  # or any branch you prefer
 
 env:
   AWS_REGION: us-east-1
