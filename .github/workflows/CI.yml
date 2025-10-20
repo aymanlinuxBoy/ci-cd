@@ -15,8 +15,8 @@ env:
     TIMESTAMP=$(date '+%Y%m%d%H%M%S')
     IMAGE_TAG="${SHORT_SHA}-${TIMESTAMP}"
     IMAGE_URI: 662792376110.dkr.ecr.us-east-1.amazonaws.com/demo:${IMAGE_TAG}
-    echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-    echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+    #echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+    #echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
     
 
   
