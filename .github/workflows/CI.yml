@@ -53,7 +53,10 @@ jobs:
 
 
       - name: Tag Docker image
-        run: docker tag $ECR_REPOSITORY:$IMAGE_TAG $IMAGE_URI
+        run: |
+           set -x
+           docker tag $ECR_REPOSITORY:$IMAGE_TAG $IMAGE_URI
+           
           
       - name: Push to Amazon ECR
         run: |
