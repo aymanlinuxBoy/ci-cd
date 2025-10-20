@@ -10,6 +10,7 @@ env:
   ECR_REGISTRY: 662792376110.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: demo
   IMAGE_TAG: ${{ github.sha }}   # unique image tag per commit
+  IMAGE_URI: 662792376110.dkr.ecr.us-east-1.amazonaws.com/demo:${{ github.sha }}
 
 jobs:
   build-and-push:
@@ -44,6 +45,11 @@ jobs:
             
       - name: List local Docker images
         run: docker images
+
+      - name: Build Docker image
+        run: |
+          docker build -t $IMAGE_URI .
+          docker images
 
 
       - name: Tag Docker image
