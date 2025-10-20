@@ -3,23 +3,12 @@ name: Build and Push to ECR
 on:
   push:
     branches:
-      - master  # or any branch you prefer
+      - master
 
 env:
   AWS_REGION: us-east-1
-  
-  run: |
-    ECR_REGISTRY: 662792376110.dkr.ecr.us-east-1.amazonaws.com
-    ECR_REPOSITORY: demo
-    SHORT_SHA=$(git rev-parse --short HEAD)
-    TIMESTAMP=$(date '+%Y%m%d%H%M%S')
-    IMAGE_TAG="${SHORT_SHA}-${TIMESTAMP}"
-    IMAGE_URI: 662792376110.dkr.ecr.us-east-1.amazonaws.com/demo:${IMAGE_TAG}
-    #echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
-    #echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
-    
-
-  
+  ECR_REGISTRY: 662792376110.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: demo
 
 jobs:
   build-and-push:
@@ -40,7 +29,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # ✅ Build the JAR first
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -49,26 +37,25 @@ jobs:
 
       - name: Build Java app with Gradle
         run: |
-           ./gradlew clean build -x test
-            ls -lat
-            
-      - name: List local Docker images
-        run: docker images
+          ./gradlew clean build -x test
+          ls -lat
+
+      # ✅ Generate dynamic tags and export them to the environment
+      - name: Generate Docker image tag and URI
+        id: vars
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+          IMAGE_TAG="${SHORT_SHA}-${TIMESTAMP}"
+          IMAGE_URI="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${IMAGE_TAG}"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+          echo "✅ Generated image: $IMAGE_URI"
 
       - name: Build Docker image
         run: |
           docker build -t $IMAGE_URI .
           docker images
 
-
-      #- name: Tag Docker image
-        #run: |
-           #set -x
-           #docker tag $ECR_REPOSITORY:$IMAGE_TAG $IMAGE_URI
-           
-        
       - name: Push Docker image to Amazon ECR
         run: docker push $IMAGE_URI
-
-      #- name: Output image URI
-        #run: echo "Image pushed to: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
