@@ -9,14 +9,17 @@ env:
   AWS_REGION: us-east-1
   
   run: |
+    ECR_REGISTRY: 662792376110.dkr.ecr.us-east-1.amazonaws.com
+    ECR_REPOSITORY: demo
     SHORT_SHA=$(git rev-parse --short HEAD)
     TIMESTAMP=$(date '+%Y%m%d%H%M%S')
     IMAGE_TAG="${SHORT_SHA}-${TIMESTAMP}"
+    IMAGE_URI: 662792376110.dkr.ecr.us-east-1.amazonaws.com/demo:${IMAGE_TAG}
+    echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+    echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
     
-  ECR_REGISTRY: 662792376110.dkr.ecr.us-east-1.amazonaws.com
-  ECR_REPOSITORY: demo
-  IMAGE_TAG: ${{ github.sha }}   # unique image tag per commit
-  IMAGE_URI: 662792376110.dkr.ecr.us-east-1.amazonaws.com/demo:${IMAGE_TAG}
+
+  
 
 jobs:
   build-and-push:
