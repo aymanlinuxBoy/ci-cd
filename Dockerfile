@@ -1,4 +1,5 @@
-FROM openjdk:8-jre-alpine
+#FROM openjdk:8-jre-alpine
+FROM quay.io/lib/openjdk
 
 EXPOSE 8080
 
