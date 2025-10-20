@@ -52,15 +52,14 @@ jobs:
           docker images
 
 
-      - name: Tag Docker image
-        run: |
-           set -x
-           docker tag $ECR_REPOSITORY:$IMAGE_TAG $IMAGE_URI
+      #- name: Tag Docker image
+        #run: |
+           #set -x
+           #docker tag $ECR_REPOSITORY:$IMAGE_TAG $IMAGE_URI
            
-          
-      - name: Push to Amazon ECR
-        run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY:$IMAGE_TAG
+        
+      - name: Push Docker image to Amazon ECR
+        run: docker push $IMAGE_URI
 
       #- name: Output image URI
         #run: echo "Image pushed to: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
