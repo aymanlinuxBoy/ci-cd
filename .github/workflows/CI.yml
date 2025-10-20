@@ -38,7 +38,10 @@ jobs:
           java-version: 8
 
       - name: Build Java app with Gradle
-        run: ./gradlew clean build -x test
+        run: |
+           ./gradlew clean build -x test
+            ls -lat
+
 
       - name: Tag Docker image
         run: |
