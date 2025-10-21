@@ -1,0 +1,55 @@
+name: Deploy to OpenShift
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 662792376110.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: demo
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Decode kubeconfig from GitHub secret
+      - name: Configure OpenShift access
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+          echo "✅ Kubeconfig configured successfully"
+
+      # Optional: verify connection
+      - name: Verify OpenShift cluster connection
+        run: |
+          oc whoami
+          oc project ${{ vars.OPENSHIFT_NAMESPACE }}
+
+      # Compute image URI (latest build)
+      - name: Prepare image reference
+        id: prep-image
+        run: |
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date '+%Y%m%d%H%M%S')
+          IMAGE_TAG="${SHORT_SHA}-${TIMESTAMP}"
+          IMAGE_URI="${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${IMAGE_TAG}"
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+          echo "✅ Image URI: $IMAGE_URI"
+
+      # Inject the new image into the deployment manifest
+      - name: Update deployment image
+        run: |
+          sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_URI}|g" k8s/deployment.yaml
+
+      # Apply deployment to OpenShift
+      - name: Deploy to OpenShift
+        run: |
+          oc apply -n ${{ vars.OPENSHIFT_NAMESPACE }} -f k8s/deployment.yaml
+          oc rollout status deployment/demo-app -n ${{ vars.OPENSHIFT_NAMESPACE }}
