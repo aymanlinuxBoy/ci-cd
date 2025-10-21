@@ -14,11 +14,20 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Decode kubeconfig from GitHub secret
+      # 🧩 Install OpenShift CLI (oc)
+      - name: Install OpenShift CLI
+        run: |
+          curl -LO https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
+          tar -xzf oc.tar.gz
+          sudo mv oc /usr/local/bin/
+          oc version --client
+
+      # ✅ Configure kubeconfig for OpenShift
       - name: Configure OpenShift access
         run: |
           mkdir -p $HOME/.kube
@@ -26,13 +35,13 @@ jobs:
           chmod 600 $HOME/.kube/config
           echo "✅ Kubeconfig configured successfully"
 
-      # Optional: verify connection
+      # 🧠 Optional: verify connection
       - name: Verify OpenShift cluster connection
         run: |
           oc whoami
           oc project ${{ vars.OPENSHIFT_NAMESPACE }}
 
-      # Compute image URI (latest build)
+      # 🏷️ Build unique image reference
       - name: Prepare image reference
         id: prep-image
         run: |
@@ -43,13 +52,13 @@ jobs:
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
           echo "✅ Image URI: $IMAGE_URI"
 
-      # Inject the new image into the deployment manifest
+      # 🧩 Inject the image into your Deployment manifest
       - name: Update deployment image
         run: |
-          sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_URI}|g" k8s/deployment.yaml
+          sed -i "s|IMAGE_PLACEHOLDER|${IMAGE_URI}|g" deployment.yaml
 
-      # Apply deployment to OpenShift
+      # 🚀 Apply the deployment to OpenShift
       - name: Deploy to OpenShift
         run: |
-          oc apply -n ${{ vars.OPENSHIFT_NAMESPACE }} -f k8s/deployment.yaml
+          oc apply -n ${{ vars.OPENSHIFT_NAMESPACE }} -f deployment.yaml
           oc rollout status deployment/demo-app -n ${{ vars.OPENSHIFT_NAMESPACE }}
